@@ -88,12 +88,6 @@ class B extends A {
   B() : super("inherited", 1);
 }
 
-class C {
-  C (int x, {y}) {
-    
-  }
-}
-
 class D {
   A a;
 

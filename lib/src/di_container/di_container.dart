@@ -13,7 +13,9 @@ part 'resolution_data.dart';
  * - Can register objects to autowire them to dependent classes instead of creating new instances on the fly.
  */
 class DependencyInjectionContainer {
-  Map<Type, ResolutionData> type_map = new Map<Type, ResolutionData>();
+  Map<Type, ResolutionData> _type_map = new Map<Type, ResolutionData>();
+
+  Map<Type, ResolutionData> get type_map => this._type_map;
 
   /**
    * Registers [type], optionally with [named_constructor] to [DependencyInjectionContainer].
@@ -27,7 +29,7 @@ class DependencyInjectionContainer {
       register_as = for_type;
     }
     
-    type_map[register_as] = new InstantiationInfo(type, named_constructor: named_constructor);
+    _type_map[register_as] = new InstantiationInfo(type, named_constructor: named_constructor);
   }
   
   /**
@@ -43,7 +45,7 @@ class DependencyInjectionContainer {
       type = for_type.runtimeType;
     }
     
-    this.type_map[type] = new ObjectReference(object);
+    this._type_map[type] = new ObjectReference(object);
   }
 
   /**
@@ -53,7 +55,7 @@ class DependencyInjectionContainer {
    */
   Object resolve(Type type) {
     var positional_arguments = new List();
-    var named_arguments = new Map();
+    var named_arguments = new Map<Symbol, Object>();
     ResolutionData resolution_data = this._getResolutionDataFor(type);
     var instance;
     
@@ -67,9 +69,9 @@ class DependencyInjectionContainer {
     
       resolution_data.named_argument_types.forEach((name, argument_type) {
         var resolved_argument = this._resolve_argument(name, argument_type, resolution_data);     
-        named_arguments[name] = resolved_argument;
+        named_arguments[MirrorSystem.getSymbol(name)] = resolved_argument;
       });
-    
+      
       instance = resolution_data._class_mirror.newInstance(resolution_data.constructor, positional_arguments, named_arguments).reflectee;
     }
     
@@ -104,39 +106,37 @@ class DependencyInjectionContainer {
         String string_name = name.toString();
         
         if (arguments.containsKey(name)) {
-          named_arguments[name] = arguments[name];
+          named_arguments[MirrorSystem.getSymbol(name)] = arguments[name];
         } else {
          var resolved_argument = this._resolve_argument(name, argument_type, resolution_data);
-         named_arguments[name] = resolved_argument;
+         named_arguments[MirrorSystem.getSymbol(name)] = resolved_argument;
         }
       });
-    
+          
       instance = resolution_data._class_mirror.newInstance(resolution_data.constructor, positional_arguments, named_arguments).reflectee;
     }
     
     return instance;
-  }    
+  }
   
   /**
    * Get correct [InstantiationInfo] for [type]
    * 
    * Firstly, try to find [type] explicitly, then if it is not found, search for subtype.
    * If there are multiple subtypes of [type] registered, throws exception.
-   * 
-   * todo: exception type 
    */
   ResolutionData _getResolutionDataFor(Type type) {
     ResolutionData info = null;
     
-    if (this.type_map.containsKey(type)) {
-      info = this.type_map[type];
+    if (this._type_map.containsKey(type)) {
+      info = this._type_map[type];
     } else {
       var class_mirror = reflectClass(type);
       
-      this.type_map.values.forEach((inst_info) {
+      this._type_map.values.forEach((inst_info) {
         if (inst_info.class_mirror.isSubclassOf(class_mirror)) {
           if (info != null) {
-            throw new TypeResolutionException('Multiple subclasses of ' + type.toString() + ' found in container');
+            throw new MultipleSubclassesRegisteredException('Multiple subclasses of ' + type.toString() + ' found in container');
           } else {
             info = inst_info;
           }
@@ -158,10 +158,12 @@ class DependencyInjectionContainer {
     bool has_resolution_data = false;
     
     try {
-      this._getResolutionDataFor(type); //throws NoSuitableTypeRegisteredException
-      return true;
+      this._getResolutionDataFor(type);
+      has_resolution_data = true;
     } on NoSuitableTypeRegisteredException catch (exception) {
-      return false;
+      has_resolution_data =  false;
+    } on MultipleSubclassesRegisteredException catch (exception) {
+      has_resolution_data =  false;
     }
     
     return has_resolution_data;

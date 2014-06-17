@@ -2,3 +2,5 @@ name: Discharge
 description: A pub package
 dependencies:
   xml: any
+  unittest: any
+  mock: any

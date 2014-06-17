@@ -14,8 +14,8 @@ class InstantiationInfoEpected extends BaseDepenedencyInjectionContainerExceptio
   InstantiationInfoEpected(cause) : super(cause);
 }
 
-class TypeResolutionException extends BaseDepenedencyInjectionContainerException {
-  TypeResolutionException(cause) : super(cause);
+class MultipleSubclassesRegisteredException extends BaseDepenedencyInjectionContainerException {
+  MultipleSubclassesRegisteredException(cause) : super(cause);
 }
 
 class ArgumentResolutionException extends BaseDepenedencyInjectionContainerException {
