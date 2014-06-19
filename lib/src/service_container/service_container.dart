@@ -1,14 +1,14 @@
 library service_container;
 
-import '../di_container/di_container.dart';
-import 'dart:mirrors';
-import 'dart:io';
-import 'package:xml/xml.dart';
+import "../di_container/di_container.dart";
+import "dart:mirrors";
+import "dart:io";
+import "package:xml/xml.dart";
 
-part 'exceptions.dart';
-part 'service_argument.dart';
-part 'service_configuration.dart';
-part 'service_configuration_provider.dart';
+part "exceptions.dart";
+part "service_argument.dart";
+part "service_configuration.dart";
+part "service_configuration_provider.dart";
 
 /**
  * Simple container for services
@@ -35,7 +35,7 @@ class ServiceContainer {
     Map<String, Object> arguments = new Map<String, Object>();
       
     if (this.hasService(service)) {
-      return;
+      return; //todo: throw?
     }
     
     service_config.arguments.forEach((name, argument) {
@@ -81,9 +81,9 @@ class ServiceContainer {
     });
     
     if (info == null) {
-      throw new NoSuitableTypeRegisteredException('Unable to get resolution data for ' + type_name);
+      throw new NoSuitableTypeRegisteredException("Unable to get resolution data for " + type_name);
     } else if (info is ObjectReference) {
-      throw new InstantiationInfoEpected('Service can not be instantiated. Object registered instead of instantiation info.');
+      throw new InstantiationInfoEpected("Service can not be instantiated. Object registered instead of instantiation info.");
     }
     
     return info;
@@ -113,32 +113,46 @@ class ServiceContainer {
     
     return has_resolution_data;
   }
-  
+
+  /**
+   * Register [service] under [name]
+   */
   void registerService(String name, Object service) {
     this._services[name] = service;
   }
-  
+
+  /**
+   * Checks for service [name]
+   */
   bool hasService(String name) {
     return  this._services.containsKey(name);
   }
-  
+
+  /**
+   * Returns service with [name]
+   */
   Object getService(String name) {
     if (!this.hasService(name)) {
-      throw new ServiceNotFoundException('Service with this name is not registered: ' + name);
+      throw new ServiceNotFoundException("Service with this name is not registered: " + name);
     }
     
     return this._services[name];
   }
-  
+
+  /**
+   * Unregisters service with [name]
+   */
   Object unregisterService(String name) {
     if (!this.hasService(name)) {
-      throw new ServiceNotFoundException('Service with this name is not registered: ' + name);
+      throw new ServiceNotFoundException("Service with this name is not registered: " + name);
     }
     
     return this._services.remove(name);
   }
-  
-  //are all needed services registered?
+
+  /**
+   * Checks if all service dependencies can be resolved
+   */
   bool _canSatisfy(ServiceConfiguration config) {
     config.dependencies.forEach((service) {
       if (!this.hasService(service)) {
@@ -148,10 +162,13 @@ class ServiceContainer {
     
     return true;    
   }
-  
+
+  /**
+   * Satisfy [config]. Resolve all dependencies.
+   */
   void _satisfy(ServiceConfiguration config) {
     if (!this._canSatisfy(config)) {
-      throw new UnableToSatisfyDependenciesException('Service container can not satisfy the needs of service: ' + config.service_name);
+      throw new UnableToSatisfyDependenciesException("Service container can not satisfy the needs of service: " + config.service_name);
     }
     
     config.arguments.forEach((name, argument) {

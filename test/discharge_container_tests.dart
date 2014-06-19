@@ -1,8 +1,8 @@
-import 'package:unittest/unittest.dart';
-import 'package:Discharge/Discharge.dart';
+import "package:unittest/unittest.dart";
+import "package:Discharge/Discharge.dart";
 
 void main() {
-  test('Discharge container can register types', () {
+  test("Discharge container can register types", () {
     Discharge discharge = new Discharge();
     discharge.container.register(A);
     expect(discharge.container.type_map, containsPair(A, isNotNull));
@@ -11,7 +11,7 @@ void main() {
     expect(discharge.container.type_map, containsPair(B, isNotNull));
   });
 
-  test('Discharge container can register types', () {
+  test("Discharge container can register types", () {
     Discharge discharge = new Discharge();
     discharge.container.register(A);
     expect(discharge.container.type_map, containsPair(A, isNotNull));
@@ -20,34 +20,34 @@ void main() {
     expect(discharge.container.type_map, containsPair(B, isNotNull));
   });
 
-  test('Discharge container can resolve class without dependencies and empty constructor', () {
+  test("Discharge container can resolve class without dependencies and empty constructor", () {
     Discharge discharge = new Discharge();
     discharge.container.register(E);
     expect(discharge.container.resolve(E) is E, isTrue);
   });
 
-  test('Discharge container can resolve class with constructor containing named parameters with default value', () {
+  test("Discharge container can resolve class with constructor containing named parameters with default value", () {
     Discharge discharge = new Discharge();
     discharge.container.register(A, named_constructor: "withNamedParameter");
     A a = discharge.container.resolve(A);
     expect(a.text, equals("default_named_param"));
   });
 
-  test('Discharge container can resolve class with constructor containing positional parameters with default value', () {
+  test("Discharge container can resolve class with constructor containing positional parameters with default value", () {
     Discharge discharge = new Discharge();
     discharge.container.register(A);
     A a = discharge.container.resolve(A);
     expect(a.text, equals("default"));
   });
 
-  test('Discharge container can resolve class with constructor containing named parameters with custom values', () {
+  test("Discharge container can resolve class with constructor containing named parameters with custom values", () {
     Discharge discharge = new Discharge();
     discharge.container.register(A, named_constructor: "withNamedParameter");
     A a = discharge.container.resolveWithArguments(A, {"text" : "a"});
     expect(a.text, equals("a"));
   });
 
-  test('Discharge container can resolve class with constructor containing positional parameters with custom values', () {
+  test("Discharge container can resolve class with constructor containing positional parameters with custom values", () {
     Discharge discharge = new Discharge();
     discharge.container.register(A);
     Map <String, Object> map = {"text":"a", "number":2};
@@ -55,7 +55,7 @@ void main() {
     expect(a.text, equals("aa"));
   });
 
-  test('Discharge container can resolve class dependencies', () {
+  test("Discharge container can resolve class dependencies", () {
     Discharge discharge = new Discharge();
     discharge.container.register(A);
     discharge.container.register(D);
@@ -63,7 +63,7 @@ void main() {
     expect(d.a.text, equals("default"));
   });
 
-  test('Discharge container can resolve class dependencies with inhritance in mind', () {
+  test("Discharge container can resolve class dependencies with inhritance in mind", () {
     Discharge discharge = new Discharge();
     discharge.container.register(B);
     discharge.container.register(D);
@@ -71,12 +71,12 @@ void main() {
     expect(d.a.text, equals("inherited"));
   });
 
-  test('Discharge container throws exception when trying to resolve unregistered class', () {
+  test("Discharge container throws exception when trying to resolve unregistered class", () {
     Discharge discharge = new Discharge();
     expect(() => discharge.container.resolve(D), throws);
   });
 
-  test('Discharge container throws exception when trying to resolve class with multiple subclasses registered', () {
+  test("Discharge container throws exception when trying to resolve class with multiple subclasses registered", () {
     //i.e. B is A, C is A => resolve(D) => D(A) => Discharge does not know which one of A to instantiate
     Discharge discharge = new Discharge();
     discharge.container.register(C);

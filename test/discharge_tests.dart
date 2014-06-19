@@ -1,15 +1,15 @@
-import 'package:Discharge/Discharge.dart';
-import 'package:unittest/unittest.dart';
+import "package:Discharge/Discharge.dart";
+import "package:unittest/unittest.dart";
 
 void main() {
-  test('Discharge instantiation', () {
+  test("Discharge instantiation", () {
     var discharge = new Discharge();
     expect(discharge is Discharge, isTrue);
     expect(discharge.container, isNotNull);
     expect(discharge.services, isNotNull);
   });
 
-  test('StaticDischarge initialization', () {
+  test("StaticDischarge initialization", () {
     StaticDischarge.init();
 
     expect(StaticDischarge.container, isNotNull);
@@ -17,7 +17,7 @@ void main() {
   });
 
 
-  test('StaticDischarge generic instantiation', () {
+  test("StaticDischarge generic instantiation", () {
     var discharge = new StaticDischarge<A>();
     expect(discharge is StaticDischarge, isTrue);
   });

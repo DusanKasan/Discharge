@@ -83,4 +83,86 @@ Z z_instance = discharge.container.resolveWithArguments(Y, {"additional": "NOT"}
 String text = z_instance.getText(); //text = "defaultNOT"
 ````
 
-##Discharge services container - coming soon
+##Discharge service container
+Discharge service container stores and configures objects (called services) of arbitrary class. It utilizes Discharge DI container to resolve dependencies between classes and XML file to store the user-defined configuration. Each service is defined by its name - unique string identification chosen by user. The main focus of Discharge service container is to work together with Discharge DI container and allow all object configuration to be outside the code and resolving dependencies automatically.
+
+For example, there is no need to configure database access or logger in the code. Discharge will handle the dependencies and configuration before you ever need it. Another advantage is, you can seamlessly change logic or configuration behind each service and the rest of your application will never know.
+
+The service container provides the tools to register services from inside the code with the `void registerService(String name, Object service)` method, but outside-of-code configuration is preferred.
+
+Discharge service container can be accessed as `services` property of `Discharge` class.
+
+####Registering service
+The method `void registerService(String name, Object service)` will register service `service` with name `name` to Discharge service container.
+Example:
+````dart
+var discharge = new Discharge();
+discharge.service.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
+````
+
+####Unregistering service
+The method `void unregisterService(String name)` will remove service `service` with name `name` from Discharge service container.
+Example:
+````dart
+var discharge = new Discharge();
+discharge.service.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
+discharge.service.unregisterService("service_a"); //removes "service_a" from service container
+````
+
+####Checking if service exists
+You can check if service is registered by calling `bool hasService(String name)`
+Example:
+````dart
+var discharge = new Discharge();
+discharge.service.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
+discharge.service.hasService("service_a"); //true
+````
+
+####Retrieving service
+To retrieve service from the container, you call `Object getService(String name)` which will return the service if it is registered. If it's not registered it will throw an exception.
+Example:
+````dart
+var discharge = new Discharge();
+discharge.service.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
+var service = discharge.service.getService("service_a"); //fetches "service_a" from service container
+````
+
+####Configuring services
+Service configuration is done through `void configureServices(ServicesConfigurationProvider configuration_provider)` method. There is currently only one implementation of `ServicesConfigurationProvider` available. `ServicesConfigurationProviderXml` will read the XML file you pass into its constructor.
+Here is an example of the configuration file:
+````xml
+<config>
+<services>
+  <service name="service_a" class="A" autowire="yes"> <!-- Create service "service_a" by instantiating object of class A, then autowires it to DI container. -->
+      <argument name="text">po</argument> <!-- Argument with name "text" equals "po". Argument type is omitted so defaults to string. -->
+      <argument name="number" type="int">2</argument> <!-- Argument with name "text" equals "po". Argument type is integer. -->
+  </service>
+
+  <service name="service_d" class="D"> <!-- Create service "service_d" by instantiating object of class D, do not autowire. -->
+      <argument name="a" type="service">service_a</argument> <!-- Argument with name "a" references service "service_a" -->
+  </service>
+</services>
+</config>
+````
+
+The schema for the config file can be found in tests directory. Following is just a short explanation and meaning of used tags/arguments:
+- The root element name does not matter but it must have first-level child named `<services>`
+- `<services>` have children named `<service>`. Each service element represents 1 service.
+- `<service>` can have following attributes
+    - name : name of the service
+    - class : class to instantiate (note that the constructor registered in DI container will be used)
+    - autowire : yes/no, optional parameter - no by default. If set to "yes", the service will be registered into DI container for its class.
+- `<service>` have children named `<argument>`, representing constructor arguments. You can omit arguments that have default values if you wish. It encloses argument value.
+- `<argument>` can have following attributes
+    - name : argument name, for example in constructor of `A`, there is 1 argument called `text`
+    - type : bool/int/double/string/service, optional parameter - defines what data type is the argument. Default value is "string". If type is set to "service", the value of `<argument>` is the service name.
+    
+Please note that Discharge service container is bound to its DI container, meaning when instantiating services, it actually uses DI container to instantiate. From this stems the fact, that it uses the constructor with which was the class registered into DI container. On the other hand, it allows for autowiring - registering services as representations of their class into DI container.
+
+Example:
+````dart
+var discharge = new Discharge();
+var config = new File("path/to/file.xml");
+var config_provider = new ServicesConfigurationProviderXml(config);
+discharge.service.configureServices(config_provider); //will instantiate services according to config file
+````

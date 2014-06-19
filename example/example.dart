@@ -1,5 +1,5 @@
-import 'package:Discharge/Discharge.dart';
-import 'dart:io';
+import "package:Discharge/Discharge.dart";
+import "dart:io";
 
 void main() {
   
@@ -58,17 +58,17 @@ void registerInstance() {
 void registerService() {
   var discharge = new Discharge();
   var obj_a = new A("service");
-  discharge.services.registerService('service_a', obj_a);
-  print(discharge.services.getService('service_a').text);
+  discharge.services.registerService("service_a", obj_a);
+  print(discharge.services.getService("service_a").text);
 }
 
 void configureServices() {
-  var configuration = new ServicesConfigurationProviderXml(new File('config/config.xml'));
+  var configuration = new ServicesConfigurationProviderXml(new File("config/config.xml"));
   var discharge = new Discharge();
   discharge.container.register(A);
   discharge.container.register(D);
   discharge.services.configureServices(configuration);
-  discharge.services.getService('service_d').shout(); 
+  discharge.services.getService("service_d").shout();
   
   D d = discharge.container.resolve(D); //D will resolve with service_a autowired as type A
   d.shout();

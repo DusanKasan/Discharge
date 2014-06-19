@@ -1,9 +1,9 @@
 library di_container;
 
-import 'dart:mirrors';
+import "dart:mirrors";
 
-part 'exceptions.dart';
-part 'resolution_data.dart';
+part "exceptions.dart";
+part "resolution_data.dart";
 
 /**
  * Inversion of Control container. 
@@ -136,7 +136,7 @@ class DependencyInjectionContainer {
       this._type_map.values.forEach((inst_info) {
         if (inst_info.class_mirror.isSubclassOf(class_mirror)) {
           if (info != null) {
-            throw new MultipleSubclassesRegisteredException('Multiple subclasses of ' + type.toString() + ' found in container');
+            throw new MultipleSubclassesRegisteredException("Multiple subclasses of " + type.toString() + " found in container");
           } else {
             info = inst_info;
           }
@@ -145,7 +145,7 @@ class DependencyInjectionContainer {
     }
     
     if (info == null) {
-      throw new NoSuitableTypeRegisteredException('Unable to get resolution data for ' + type.toString());
+      throw new NoSuitableTypeRegisteredException("Unable to get resolution data for " + type.toString());
     }
     
     return info;

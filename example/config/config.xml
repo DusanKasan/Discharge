@@ -1,12 +1,15 @@
 <config>
 <services>
-  <service name="service_a" class="A" autowire="yes">
+    <service name="service_a" class="A" autowire="yes">
       <argument name="text">po</argument>
       <argument name="number" type="int">2</argument>
-  </service>
+    </service>
 
-  <service name="service_d" class="D">
+    <service name="service_d" class="D">
       <argument name="a" type="service">service_a</argument>
-  </service>
+    </service>
+
+    <service name="service_d" class="D">
+    </service>
 </services>
 </config>

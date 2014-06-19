@@ -51,11 +51,17 @@ class InstantiationInfo extends ResolutionData {
   Symbol get constructor => this._constructor;
   Map<String, Type> get positional_argument_types => this._positional_argument_types;
   Map<String, Type> get named_argument_types => this._named_argument_types;
-  
+
+  /**
+   * Checks if there is default value for [argument]
+   */
   bool hasDefaultValueFor(String argument) {
     return this._default_values.containsKey(argument);
   }
-  
+
+  /**
+   * Returns default value for [argument]
+   */
   Object getDefaultValueFor(String argument) {
     if (! this.hasDefaultValueFor(argument)) {
       throw new NoDefaultArgumentValueException("No default value for argument: " + argument);
