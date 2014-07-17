@@ -1,6 +1,6 @@
+#Discharge - Dependency injection and service container for Dart
 [![Build Status](https://drone.io/github.com/DusanKasan/Discharge/status.png)](https://drone.io/github.com/DusanKasan/Discharge/latest)
 
-#Discharge - Dependency injection and service container for Dart
 Discharge is dependency injection (DI) and service container that uses constructor DI. 
 
 This means that as long as Discharge DI container knows about your classes, you no longer need to care about any of the dependencies between them. Discharge will help you to embrace DI without all the additional code that stems from the need to instantiate all the dependencies outside the classes which will use them. This will in turn allow you to loosen the coupling between classes in your application which means better code quality, smaller classes, testable code and more :) 
