@@ -1,3 +1,5 @@
+[![Build Status](https://drone.io/github.com/DusanKasan/Discharge/status.png)](https://drone.io/github.com/DusanKasan/Discharge/latest)
+
 #Discharge - Dependency injection and service container for Dart
 Discharge is dependency injection (DI) and service container that uses constructor DI. 
 
@@ -97,7 +99,7 @@ The method `void registerService(String name, Object service)` will register ser
 Example:
 ````dart
 var discharge = new Discharge();
-discharge.service.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
+discharge.services.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
 ````
 
 ####Unregistering service
@@ -105,8 +107,8 @@ The method `void unregisterService(String name)` will remove service `service` w
 Example:
 ````dart
 var discharge = new Discharge();
-discharge.service.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
-discharge.service.unregisterService("service_a"); //removes "service_a" from service container
+discharge.services.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
+discharge.services.unregisterService("service_a"); //removes "service_a" from service container
 ````
 
 ####Checking if service exists
@@ -114,8 +116,8 @@ You can check if service is registered by calling `bool hasService(String name)`
 Example:
 ````dart
 var discharge = new Discharge();
-discharge.service.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
-discharge.service.hasService("service_a"); //true
+discharge.services.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
+discharge.services.hasService("service_a"); //true
 ````
 
 ####Retrieving service
@@ -123,8 +125,8 @@ To retrieve service from the container, you call `Object getService(String name)
 Example:
 ````dart
 var discharge = new Discharge();
-discharge.service.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
-var service = discharge.service.getService("service_a"); //fetches "service_a" from service container
+discharge.services.registerService("service_a", new A()); //will create new service named "service_a" by instantiating A
+var service = discharge.services.getService("service_a"); //fetches "service_a" from service container
 ````
 
 ####Configuring services

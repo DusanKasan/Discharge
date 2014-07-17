@@ -130,7 +130,7 @@ class ServicesConfigurationProviderXml extends ServicesConfigurationProvider {
           } else if (argument_value.toLowerCase() == "false") {
             converted_argument_value = false; 
           } else {
-            throw new Exception("Unable to convert "$argument_value" to bool");
+            throw new Exception("Unable to convert $argument_value to bool");
           }
         } else if (argument_type == "int") {
           converted_argument_value = int.parse(argument_value);
