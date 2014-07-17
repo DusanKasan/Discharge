@@ -1,4 +1,4 @@
-import "package:Discharge/Discharge.dart";
+import "package:discharge/discharge.dart";
 import "package:unittest/unittest.dart";
 
 void main() {

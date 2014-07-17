@@ -1,5 +1,5 @@
 import "package:unittest/unittest.dart";
-import "package:Discharge/Discharge.dart";
+import "package:discharge/discharge.dart";
 
 void main() {
   test("Discharge container can register types", () {

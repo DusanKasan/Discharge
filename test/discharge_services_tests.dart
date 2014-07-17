@@ -1,6 +1,6 @@
 import "package:unittest/unittest.dart";
 import "package:mock/mock.dart";
-import "package:Discharge/Discharge.dart";
+import "package:discharge/discharge.dart";
 import "dart:io";
 
 void main() {
